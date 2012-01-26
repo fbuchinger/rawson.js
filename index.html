@@ -10,7 +10,8 @@
     FS.init(undefined, function(data){console.log(data.length), undefined});
     function raw_to_image(filename, data) {
       var infile = FS.createDataFile('/', filename, data, true, true);
-      run(['/'+ filename]);
+      var parameters = document.getElementById("parameters").value.split(" ");
+      run(parameters.push('/'+ filename));
     }
     
     function handleFiles(files) {
@@ -25,7 +26,10 @@
 </head>
 
 <body>
-	<h1>Pick file</h1>
+	<h1>dcraw.js test page</h1>
+	<label for="parameters">Enter dcraw <a href="http://www.cybercom.net/~dcoffin/dcraw/dcraw.1.html">parameters</a></label>
+	<input id="parameters" name="parameters" value="-v -i">
+	<label for="file">Pick Camera Raw File</label>
 	<input type="file" id="input" onchange="handleFiles(this.files)">
 </body>
 
