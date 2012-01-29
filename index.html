@@ -5,32 +5,91 @@
 <head>
     <title>DCRaw test page</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <script type="text/javascript" src="lib/dcraw.js"></script>
-    <script>
-    FS.init(undefined, function(data){console.log(data.length), undefined});
-    function raw_to_image(filename, data) {
-      var infile = FS.createDataFile('/', filename, data, true, true);
-      var parameters = document.getElementById("parameters").value.split(" ");
-      run(parameters.push('/'+ filename));
+    <script type="text/javascript">
+    var Module = {
+      noInitialRun: true
+    };    
+    </script>
+    <script type="text/javascript" src="lib/dcraw.min.js"></script>
+    <script type="text/javascript" src="lib/dcraw-wrapper.js"></script>
+    <style>
+
+    body {
+        font-family: Arial, Helvetica,Verdana,sans-serif;
     }
+    #content {
+        margin-left:20%;
+        margin-right:20%;
+    }
+
+    .preview-container {
+        width:800px;
+        height:600px;
+        position:relative;
+        border: 3px dashed #ddd;
+    }
+
+    .preview-container img {
+        display:block;
+        border: none;
+    }
+
+    .drag-hint {
+      bottom: 0;
+      height: 40px;
+      left: 0;
+      margin: auto;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 300px;
+      font-size:24px;
+      color:#ddd;
+    }
+
+
+    
+    </style>
+<script>
+
+    var rawFiles = {}
     
     function handleFiles(files) {
-        var file = files[0];  
-        var reader = new FileReader();  
-        reader.onload = function(e) {
-            raw_to_image(file.name,e.target.result);
-        };  
-        reader.readAsBinaryString(file);   
+        var file = files[0];
+        if (!rawFiles[file.name]){
+            var reader = new FileReader();  
+            reader.onload = function(e) {
+                var rawFile = new DCRawFile(file.name,e.target.result);
+                rawFiles[file.name] = rawFile;
+                preview.loadImageFromData(rawFile.extractThumbnail());
+            };  
+            reader.readAsBinaryString(file);
+        }       
     }  
+
+    function init(){
+        window.preview = new RawPreview('preview');
+    }
+
 	</script>
 </head>
 
-<body>
-	<h1>dcraw.js test page</h1>
-	<label for="parameters">Enter dcraw <a href="http://www.cybercom.net/~dcoffin/dcraw/dcraw.1.html">parameters</a></label>
-	<input id="parameters" name="parameters" value="-v -i">
-	<label for="file">Pick Camera Raw File</label>
+<body onload="init();">
+    <div id="content">
+	<h1>Camera Raw Viewer</h1>
+    <p>
+      ...based on <a href="">Dave Coffin's fantastic dcraw library</a>, ported to Javascript by <a href="http://fbuchinger.github.com/">Franz Buchinger</a> using <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>.<br /> Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for helping me porting this great library.
+</p>
+	<label for="file">Pick Camera Raw File...</label>
 	<input type="file" id="input" onchange="handleFiles(this.files)">
+    <div class="preview-container">
+        <div class="drag-hint" style="display:none;">..or drag RAW file here...</div>
+        <div class="target-image"><img id="preview" style="width:800px; height:600px;"></div>
+    </div>
+    <div id="file-info">
+
+    </div>
+    </div>
 </body>
 
 </html>
