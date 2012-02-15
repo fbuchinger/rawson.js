@@ -1,0 +1,50 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>DCRaw test page</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <script type="text/javascript" src="lib/dcraw.js"></script>
+    <script>
+    //FS.init(undefined, function(data){console.log(data.length), undefined});
+    function raw_to_image(filename, data) {
+      var infile = FS.createDataFile('/', filename, data, true, true);
+      var parameters = document.getElementById("parameters").value.split(" ");
+      run(parameters.push('/'+ filename));
+    }
+    Module.noInitialRun = true;
+    function displayThumbnail (fname){
+		var thumbName = fname.split('.')[0] + '.thumb.jpg';
+		var fileData = JSON.stringify(FS.root.contents[thumbName]);
+		var fileDataSer = JSON.parse(fileData);
+		var fileLength = fileDataSer.contents.length;
+		var base64str = '';
+		for (var i = 0; i < fileLength; i++){
+			base64str += String.fromCharCode(fileDataSer.contents[i]);
+		}
+		var img = document.createElement('img');
+		img.src = "data:image/jpeg;base64," + window.btoa(base64str);
+		document.body.appendChild(img)
+	}
+    
+    function handleFiles(files) {
+        var file = files[0];  
+        var reader = new FileReader();  
+        reader.onload = function(e) {
+            raw_to_image(file.name,e.target.result);
+        };  
+        reader.readAsBinaryString(file);   
+    }  
+	</script>
+</head>
+
+<body>
+	<h1>dcraw.js test page</h1>
+	<label for="parameters">Enter dcraw <a href="http://www.cybercom.net/~dcoffin/dcraw/dcraw.1.html">parameters</a></label>
+	<input id="parameters" name="parameters" value="-v -i">
+	<label for="file">Pick Camera Raw File</label>
+	<input type="file" id="input" onchange="handleFiles(this.files)">
+</body>
+
+</html>

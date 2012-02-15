@@ -5,13 +5,20 @@
 <head>
     <title>DCRaw test page</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="external/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="external/bootstrap/css/darkstrap.css"/>
     <script type="text/javascript">
     var Module = {
-      noInitialRun: true
-    };    
+      noInitialRun: true,
+      printErr: function(data){alert(data)}
+    };  
     </script>
+    
     <script type="text/javascript" src="lib/dcraw.min.js"></script>
     <script type="text/javascript" src="lib/dcraw-wrapper.js"></script>
+    <script type="text/javascript" src="external/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="external/bootstrap/js/bootstrap.min.js"></script>
+   
     <style>
 
     body {
@@ -23,10 +30,7 @@
     }
 
     .preview-container {
-        width:800px;
-        height:600px;
         position:relative;
-        border: 3px dashed #ddd;
     }
 
     .preview-container img {
@@ -46,50 +50,166 @@
       font-size:24px;
       color:#ddd;
     }
+    
+    .hero-unit {
+        background-color: inherit;
+        border: 3px dashed #ddd;
+    }
+    
+    body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+    }
+    
+    .sidebar-nav {
+        padding: 9px 0;
+    } 
 
 
     
     </style>
 <script>
-
-    var rawFiles = {}
     
     function handleFiles(files) {
-        var file = files[0];
-        if (!rawFiles[file.name]){
-            var reader = new FileReader();  
-            reader.onload = function(e) {
-                var rawFile = new DCRawFile(file.name,e.target.result);
-                rawFiles[file.name] = rawFile;
-                preview.loadImageFromData(rawFile.extractThumbnail());
-            };  
-            reader.readAsBinaryString(file);
-        }       
+        for (var i = 0; i < files.length; i++){
+            rawViewer.readFile(files[i]);
+        }
     }  
 
     function init(){
-        window.preview = new RawPreview('preview');
+        window.rawViewer = new RawViewer('preview');
     }
 
 	</script>
 </head>
 
 <body onload="init();">
-    <div id="content">
-	<h1>Camera Raw Viewer</h1>
-    <p>
-      ...based on <a href="">Dave Coffin's fantastic dcraw library</a>, ported to Javascript by <a href="http://fbuchinger.github.com/">Franz Buchinger</a> using <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>.<br /> Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for helping me porting this great library.
-</p>
-	<label for="file">Pick Camera Raw File...</label>
-	<input type="file" id="input" onchange="handleFiles(this.files)">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="#">dcraw.js - a camera raw viewer in pure javascript</a>
+          <div class="nav-collapse">
+            <p class="navbar-text pull-right"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+            
+            <!-- PROJECT INFO-->
+          <div class="well">
+            <h3>About</h3>
+             ...based on <a href="">Dave Coffin's fantastic dcraw library</a>, 
+            ported to Javascript by <a href="http://fbuchinger.github.com/">Franz Buchinger</a>
+            using <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>.<br /> 
+            Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for helping me porting this great library.
+          </div>
+          
+          
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                <li class="active"><a href="#1" data-toggle="tab">Files</a></li>
+                <li><a href="#2" data-toggle="tab">Metadata</a></li>
+                <li><a href="#3" data-toggle="tab">Raw Processing</a></li>
+                </ul>
+                <div class="tab-content">
+                    
+                    <!-- Thumbnail Pane-->
+                    <div class="tab-pane active" id="1">
+                        <label for="file">Add Camera Raw File(s)...</label><input type="file" id="input" multiple="multiple" onchange="handleFiles(this.files)">
+                        <ul class="thumbnails">
+                            <script type="x-dcraw-template" id="thumbnail-template">
+                            <li class="span6">
+                                <div class="thumbnail">
+                                <img src="http://placehold.it/260x180" alt="">
+                                <h5>fName</h5>
+                                </div>
+                            </li>
+                            </script>
+                        </ul>
+                    </div>
+                    
+                    <!-- Metadata Pane -->
+                    <div class="tab-pane" id="2">
+                        <h3>Image Metadata</h3>
+                        <table id="metadata-info" class="table-condensed table-striped">
+                            <thead>
+                              <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                     <!-- Raw Processor -->
+                    <div class="tab-pane" id="3">
+                        
+                        <h3>Raw Processing</h3>
+                            <div class="alert">
+                            <a class="close">×</a>
+                            <strong>Warning!</strong> The commands on this tab are CPU-intensive, time-consuming and can likely crash or freeze your browser!
+                            </div>
+                            <div class="well">
+                                <label for="white-balance">White Balance</label>
+                                <select id="white-balance">
+                                    <option value="-w">Camera</option>
+                                    <option value="-a">Average</option>
+                                    <option value="-r">Own...</option>
+                                </select>
+                                <label for="highlights">Highlights</label>
+                                <select id="highlights">
+                                    <option value="-H 0">Clip to white</option>
+                                    <option value="-H 1">Preserve (pink shades)</option>
+                                    <option value="-H 2">Blend (fade to white)</option>
+                                </select>
+                                <label for="interpolation">Interpolation</label>
+                                <select id="interpolation">
+                                    <option value="-q 0">Bilinear (fast, low quality)</option>
+                                    <option value="-q 1">Variable Number of Gradients (VNG)</option>
+                                    <option value="-q 2">Patterned Pixel Grouping (PPG)</option>
+                                    <option value="-q 3">Adaptive Homogeneity Directed (AHG)</option>
+                                </select>
+                                <label for="half-size">Half-size interpolation (recommended)</label>
+                                <input type="checkbox" value="-h" checked>
+                                 <label for="rgb-four-colors">Interpolate RGB as four colors (VNG & AHD only)</label>
+                                <input type="checkbox" value="-f"><br /><br />
+                                <button>Process!</button>
+                            </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+          
+        </div><!--/span-->
+        <div class="span9">
+          <div class="hero-unit">
+	<label for="file"></label>
+	
     <div class="preview-container">
         <div class="drag-hint" style="display:none;">..or drag RAW file here...</div>
-        <div class="target-image"><img id="preview" style="width:800px; height:600px;"></div>
+        <div class="target-image"><img id="preview" style="width:100%; height:100%;"></div>
     </div>
     <div id="file-info">
 
-    </div>
-    </div>
+    </div>     
+
+          </div>
+        </div><!--/span-->
+      </div><!--/row-->
+
+
+    </div><!--/.fluid-container-->
+
+
 </body>
 
 </html>

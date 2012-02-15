@@ -1,0 +1,203 @@
+<html>
+<head>
+    <title>PPM to BMP test</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <script type="text/javascript">
+    </script>
+    <script type="text/javascript" src="lib/binary-parser.js"></script>
+    <script type="text/javascript" src="lib/bmp_lib.js"></script>
+    <script type="text/javascript" src="ppmdata.js"></script>
+    <script>
+        var simpleppm = "UDYKMiAyCjI1NQr/AAD/AAD/AAD/AAA=";
+
+        function _decodePPM (ppmData){
+            var ppmStruct = ppmData.split('\n');
+            var imgDims = ppmStruct[1];
+            var imgWidth = parseInt(imgDims.split(' ')[0]);
+            var imgHeight = parseInt(imgDims.split(' ')[1]);
+            var imgPixels = ppmStruct[3];
+            var pixelRows = [];
+            for (var j = 0; j < imgHeight; j++){
+                var pixelRow = [];
+                for (var i = 0; i < imgWidth; i++){
+                    //var curOffset = 3 * (imgWidth * i + j);
+                    var curOffset = 3 * (j* i);
+                    var pixel = {
+                        r: imgPixels.charCodeAt(curOffset),
+                        g: imgPixels.charCodeAt(curOffset + 1),
+                        b: imgPixels.charCodeAt(curOffset + 2)
+                    }
+                    pixelRow.push(pixel);                    
+                }
+                pixelRows.push(pixelRow);
+            }
+            return {
+                width: imgWidth,
+                height: imgHeight,
+                pixels: pixelRows
+            }
+        }
+
+        function PPMtoBMPLib (ppmData){
+             var ppmStruct = ppmData.split('\n');
+            var imgDims = ppmStruct[1];
+            var imgWidth = parseInt(imgDims.split(' ')[0],10);
+            var imgHeight = parseInt(imgDims.split(' ')[1],10);
+            var imgPixels = ppmStruct[3];
+            var pixelRows = [];
+            for (var j = 0; j < imgHeight; j++){
+                var pixelRow = [];
+                for (var i = 0; i < imgWidth; i++){
+                    //var curOffset = 3 * (imgWidth * i + j);
+                    var curOffset = 3 * (j* i);
+                    var pixel = [
+                        imgPixels.charCodeAt(curOffset),
+                        imgPixels.charCodeAt(curOffset + 1),
+                        imgPixels.charCodeAt(curOffset + 2)
+                    ]
+                    pixelRow.push(pixel);                    
+                }
+                pixelRows.push(pixelRow);
+            }
+            return bmp_lib.render('bmpout', pixelRows, null);
+        }
+
+        //direct conversion skipping unnecessary steps
+        function SimplePPMtoBMP (ppmData) {
+            var ppmStruct = ppmData.split('\n');
+            var imgDims = ppmStruct[1];
+            var imgWidth = parseInt(imgDims.split(' ')[0]);
+            var imgHeight = parseInt(imgDims.split(' ')[1]);
+            var imgPixels = ppmStruct[3];
+            var pixelRows = [];
+            var bytesPerLine = (3 * (imgWidth + 1) / 4) * 4;
+            var paddingBytes = new Array ((bytesPerLine - imgWidth * 3) + 1).join(String.fromCharCode(0));
+            //chunk the ppm pixel stream into rows
+            var pixelRowLength = imgWidth * 3;
+            for(var i=0, len=imgPixels.length; i < len; i += pixelRowLength) {
+                pixelRows.push(imgPixels.substr(i, pixelRowLength) + paddingBytes)
+            }
+            var pixelData = pixelRows.reverse().join('');
+            return getBMPHeader(imgWidth, imgHeight) + pixelData;
+        }
+        
+        function ppmToCanvas (ppmDataArr){
+            var magicNumberIdx = ppmDataArr.indexOf(10); //10 -> '\n'
+            var dimIdx = ppmDataArr.indexOf(10, magicNumberIdx +1);
+            var maxValIdx = ppmDataArr.indexOf(10, dimIdx +1);
+            var dataOffset = maxValIdx +1;
+            var dimStr = String.fromCharCode.apply(this,ppmDataArr.slice(magicNumberIdx + 1, dimIdx));
+            var photoDims = dimStr.split(" ");
+            var width = ~~photoDims[0]
+            var height = ~~photoDims[1];
+
+            var canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+
+            var ctx = canvas.getContext('2d');
+            var rgbaImage = ctx.createImageData(width, height);
+            var pixelData = ppmDataArr.slice(dataOffset);
+            
+            var ppmPixelLength = pixelData.length;
+            var rgbaPixelLength = width*height*4;
+            var i = 0;
+            var j = 0;
+            while (i < ppmPixelLength && j < rgbaPixelLength) {
+                rgbaImage.data[j] = pixelData[i]; // R
+                rgbaImage.data[j+1] =  pixelData[i+1]; // G
+                rgbaImage.data[j+2] = pixelData[i+2]; // B
+                rgbaImage.data[j+3] = 255; // A
+                j += 4;
+                i += 3;
+            }
+            ctx.putImageData(rgbaImage, 0, 0);
+            return canvas.toDataURL();
+        }
+
+        function init(){
+            imgOut = document.getElementById('bmpout')
+            var imgData = ppmToCanvas(ppmArr);
+            imgOut.src = imgData;
+        }
+
+        function getBMPHeader (width, height){
+            var headerOffset = 54;
+            var bytesPerLine = (3 * (width + 1) / 4) * 4; //bytesPerLine must be a multiple of 4
+            var fileSize = headerOffset + bytesPerLine * height; //filesize in bytes
+            var bp = new BinaryParser(); 
+     
+            var bmpOut = '';
+            var bmpHeader = [
+                ("B").charCodeAt(0),             //char bfType[2] -> "BM"
+                ("M").charCodeAt(0),
+                bp.fromInt(fileSize),            //int bfSize -> size of files in bytes
+                bp.fromInt(0),                   //int bfReserved -> set to 0
+                bp.fromInt(headerOffset),        //int bfOffbits -> set to 54
+                bp.fromInt(40),                  //int biSize -> Size of BITMAPINFOHEADER, in bytes (= 40)
+                bp.fromInt(width),            // int biWidth -> Width of image, in pixels
+                bp.fromInt(height),           //int biHeight -> Height of image in pixels
+                bp.fromShort(1),                 //short biPlanes ->  Number of planes in target device (set to 1) 
+                bp.fromShort(24),                //short biBitCount -> Bits per pixel (24 in this case)
+                bp.fromInt(0),                   //int biCompression -> Type of compression (0 if no compression(
+                bp.fromInt(bytesPerLine* height), //int biSizeImage -> image size in bytes
+                bp.fromInt(0),                   //int biXPelsPerMeter; -> Resolution in pixels/meter of display device
+                bp.fromInt(0),                   //int biYPelsPerMeter; -> Resolution in pixels/meter of display device,
+                bp.fromInt(0),                   // int biClrUsed; -> Number of colors in the color table (if 0, use maximum allowed by biBitCount)
+                bp.fromInt(0),                   //int biClrImportant;    Number of important colors.  If 0, all colors are important
+            ].join('');
+
+            return bmpHeader;
+        }
+
+        function _PPMtoBMP (ppmData){
+            //var sfc = String.fromCharCode;
+            var ppm = _decodePPM(ppmData);
+            var headerOffset = 54;
+            var imgHeight = ppm.height;
+            var imgWidth = ppm.width;
+            var bytesPerLine = (3 * (imgWidth + 1) / 4) * 4; //bytesPerLine must be a multiple of 4
+            var fileSize = headerOffset + bytesPerLine * imgHeight; //filesize in bytes
+            var bp = new BinaryParser(); 
+     
+            var bmpOut = '';
+            var bmpHeader = [
+                ("B").charCodeAt(0),             //char bfType[2] -> "BM"
+                ("M").charCodeAt(0),
+                bp.fromInt(fileSize),            //int bfSize -> size of files in bytes
+                bp.fromInt(0),                   //int bfReserved -> set to 0
+                bp.fromInt(headerOffset),        //int bfOffbits -> set to 54
+                bp.fromInt(40),                  //int biSize -> Size of BITMAPINFOHEADER, in bytes (= 40)
+                bp.fromInt(imgWidth),            // int biWidth -> Width of image, in pixels
+                bp.fromInt(imgHeight),           //int biHeight -> Height of image in pixels
+                bp.fromShort(1),                 //short biPlanes ->  Number of planes in target device (set to 1) 
+                bp.fromShort(24),                //short biBitCount -> Bits per pixel (24 in this case)
+                bp.fromInt(0),                   //int biCompression -> Type of compression (0 if no compression(
+                bp.fromInt(bytesPerLine* height), //int biSizeImage -> image size in bytes
+                bp.fromInt(0),                   //int biXPelsPerMeter; -> Resolution in pixels/meter of display device
+                bp.fromInt(0),                   //int biYPelsPerMeter; -> Resolution in pixels/meter of display device,
+                bp.fromInt(0),                   // int biClrUsed; -> Number of colors in the color table (if 0, use maximum allowed by biBitCount)
+                bp.fromInt(0),                   //int biClrImportant;    Number of important colors.  If 0, all colors are important
+            ].join('');
+            
+             bmpOut += bmpHeader;
+
+            //write file contents of bmp file
+           var line = new Array(bytesPerLine);
+           for (var i = imgHeight - 1; i >= 0; i--){
+             for (var j = 0; j < imgWidth; j++){
+                var ipos = 3 * (width * i + j);
+                line[3*j] = rgb[ipos + 2];
+                line[3*j+1] = rgb[ipos + 1];
+                line[3*j+2] = rgb[ipos];
+             }
+              fwrite(line, bytesPerLine, 1, file);
+             }
+            return bmpOut;
+        }
+    </script>
+</head>
+<body onload="init()";>
+    <img id="bmpout">
+</body>
+</html>
