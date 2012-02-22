@@ -8,24 +8,29 @@ var Module = {
     };  
 
 var fs = require('fs');
-//var dcraw = require('./lib/dcraw.min.js');
+var dcraw = require('./build/dcraw.js');
 var dcraw_wrapper = require('./lib/dcraw-wrapper.js');
+//var libraw = require('./lib/dcraw_raw_to_ppm.js');
+
+//libraw.run(['samples/RAW_CANON_G2.CRW'])
 
 // Force encoding to ascii text
-fs.readFile('samples/RAW_CANON_G2.CRW', function(err,data){
+var filename = 'RAW_CANON_G2.CRW';
+fs.readFile('samples/' + filename, function(err,data){
   if(err) {
     console.error("Could not open file: %s", err);
     process.exit(1);
   }
-  rawFile = new dcraw_wrapper.DCRawFile('RAW_CANON_G2.CRW', data);
-  rawFile.dcraw.run(['-h','/RAW_CANON_G2.CRW']);
-  var outputBuffer = rawFile.FS.root.contents['RAW_CANON_G2.ppm'].contents;
+
+  rawFile = new dcraw_wrapper.DCRawFile(filename, data);
+  outputBuffer = rawFile.toBitmap();
   console.log(outputBuffer.slice(15,30));
+  var outfile = filename.split('.')[0] + '.ppm';
   var pnmOut = '';
   for (var i = 0, ii = outputBuffer.length;i < ii; i++){
     pnmOut += String.fromCharCode(outputBuffer[i]);
   }
-  fs.writeFile("test.ppm", pnmOut,'ascii',function(err) {
+  fs.writeFile(outfile, pnmOut,'binary',function(err) {
         if(err) {
             console.log(err);
         } else {
@@ -34,5 +39,6 @@ fs.readFile('samples/RAW_CANON_G2.CRW', function(err,data){
   }); 
   //console.log(rawFile.getMetadata());
 });
+
 
 
