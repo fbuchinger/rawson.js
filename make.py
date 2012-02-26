@@ -50,9 +50,9 @@ f.writelines([prepend_js,contents, append_js])
 f.close()
 
 
-"""
+
 Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-               '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
-               '--js', 'openjpeg.elim.js', '--js_output_file', 'openjpeg.js'], stdout=PIPE, stderr=STDOUT).communicate()
-"""
+               # '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
+               '--js', 'build/dcraw.js', '--js_output_file', 'build/dcraw.min.js'], stdout=PIPE, stderr=STDOUT).communicate()
+
 

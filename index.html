@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
-    <title>DCRaw test page</title>
+    <title>rawson.js - a camera raw previewer in javascript</title>
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="external/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="external/bootstrap/css/darkstrap.css"/>
@@ -14,9 +14,10 @@
     };  
     </script>
     
-    <script type="text/javascript" src="lib/dcraw.min.js"></script>
+    <script type="text/javascript" src="build/dcraw.js"></script>
     <script type="text/javascript" src="lib/dcraw-wrapper.js"></script>
     <script type="text/javascript" src="external/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="external/jquery.event.drag-2.0.min.js"></script>
     <script type="text/javascript" src="external/bootstrap/js/bootstrap.min.js"></script>
    
     <style>
@@ -29,13 +30,19 @@
         margin-right:20%;
     }
 
-    .preview-container {
+    #preview-container {
         position:relative;
+        overflow: hidden;
+        top:50px;
     }
 
-    .preview-container img {
+    #preview-container img {
         display:block;
-        border: none;
+        position: relative;
+        background-color: green;
+        /*border: none;
+        width: 800px;
+        height: 600px;*/
     }
 
     .drag-hint {
@@ -53,16 +60,54 @@
     
     .hero-unit {
         background-color: inherit;
-        border: 3px dashed #ddd;
+        padding: 0;
+        border: 0px dashed #ddd;
     }
     
-    body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-    }
     
     .sidebar-nav {
         padding: 9px 0;
+    }
+    
+     .rotate-90deg {
+        transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+    }
+    
+    .rotate-180deg {
+        transform: rotate(-180deg);
+        -moz-transform: rotate(-180deg);
+        -webkit-transform: rotate(-180deg);
+    }
+    
+    .rotate-270deg {
+        transform: rotate(-270deg);
+        -moz-transform: rotate(-270deg);
+        -webkit-transform: rotate(-270deg);
+    }
+    
+    .rotate90deg {
+        transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+    }
+    
+    .rotate180deg {
+        transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+    }
+    
+    .rotate270deg {
+        transform: rotate(270deg);
+        -moz-transform: rotate(270deg);
+        -webkit-transform: rotate(270deg);
+    }
+    
+    .subheadline {
+        font-size:12px;
+        text-transform:uppercase;
     } 
 
 
@@ -77,8 +122,47 @@
     }  
 
     function init(){
-        window.rawViewer = new RawViewer('preview');
+       
     }
+    
+    
+    $(function(){
+        
+        window.rawViewer = new Rawson.Viewer('preview');
+        
+        var menuItems = {
+            '#rotate-right': function (){
+                rawViewer.rotatePreview('right');
+            },
+            '#rotate-left': function (){
+                rawViewer.rotatePreview('left');
+            },
+            '#open-file': function (){
+                rawViewer.removeAll();
+                $('#input').trigger('click');
+            },
+            '#add-file': function (){
+                $('#input').trigger('click');
+            },
+            '#remove-all': function (){
+                rawViewer.removeAll();
+            }
+        };
+        
+        $("#rawson-menu").on("click", "a", function() {
+            var $menuItem = $(this);
+            
+            jQuery.each(menuItems, function(itemSelector, action){
+                if ($menuItem.is(jQuery(itemSelector))){
+                    menuItems[action]();
+                    return false;
+                }
+            });
+          
+        });
+        
+
+    });
 
 	</script>
 </head>
@@ -88,10 +172,38 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="#">dcraw.js - a camera raw viewer in pure javascript</a>
-          <div class="nav-collapse">
+          <a class="brand" href="#">rawson.js <span class="subheadline">a camera raw previewer in javascript</span></a>
+          
+          <ul class="nav" id="rawson-menu">
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Files</a>
+            <ul class="dropdown-menu">
+                <li><a id="open-file" href="#">Open ...</a></li>
+                <li><a href="#">Add ...</a></li>
+                <li><a id="remove-all" href="#">Clear all</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Image</a>
+            <ul class="dropdown-menu">
+                
+                <li><a id="rotate-left" href="#">Rotate left (L)</a></li>
+                <li><a id="rotate-right" href="#">Rotate right (R)</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Zoom in (+)</a></li>
+                <li><a href="#">Zoom out (-)</a></li>
+                <li><a href="#">Fit to screen (F)</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Save as JPEG...</a></li>
+            </ul>
+          </li>
+          <li><a href="#">About</a></li>
+        </ul>
+
+          
+          <!--<div class="nav-collapse">
             <p class="navbar-text pull-right"></p>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
@@ -102,12 +214,11 @@
         <div class="span3">
             
             <!-- PROJECT INFO-->
-          <div class="well">
-            <h3>About</h3>
-             ...based on <a href="">Dave Coffin's fantastic dcraw library</a>, 
+          <div class="well" style="margin-top:60px;">
+            rawson.js is a <a href="http://en.wikipedia.org/wiki/Raw_image_format" target="_new">camera raw</a> previewer in javascript. "previewer" means that rawson.js can display the embedded JPEG preview 
+            and metadata of a raw file, but not (yet) render the captured sensor data. <br />rawson.js is based on <a href="">Dave Coffin's great dcraw library</a>, 
             ported to Javascript by <a href="http://fbuchinger.github.com/">Franz Buchinger</a>
-            using <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>.<br /> 
-            Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for helping me porting this great library.
+            using <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>. (Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for his invaluable help)<br /> 
           </div>
           
           
@@ -153,7 +264,8 @@
                     <div class="tab-pane" id="3">
                         
                         <h3>Raw Processing</h3>
-                            <div class="alert">
+                        not yet...
+                            <!--<div class="alert">
                             <a class="close">×</a>
                             <strong>Warning!</strong> The commands on this tab are CPU-intensive, time-consuming and can likely crash or freeze your browser!
                             </div>
@@ -182,7 +294,7 @@
                                  <label for="rgb-four-colors">Interpolate RGB as four colors (VNG & AHD only)</label>
                                 <input type="checkbox" value="-f"><br /><br />
                                 <button>Process!</button>
-                            </div>
+                            </div>-->
                     </div>
                     
                     
@@ -191,18 +303,10 @@
           
         </div><!--/span-->
         <div class="span9">
-          <div class="hero-unit">
-	<label for="file"></label>
-	
-    <div class="preview-container">
-        <div class="drag-hint" style="display:none;">..or drag RAW file here...</div>
-        <div class="target-image"><img id="preview" style="width:100%; height:100%;"></div>
-    </div>
-    <div id="file-info">
-
-    </div>     
-
+          <div class="hero-unit well" id="preview-container">
+            <img id="preview">
           </div>
+        </div>
         </div><!--/span-->
       </div><!--/row-->
 
