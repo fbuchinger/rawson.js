@@ -29,19 +29,32 @@ print 'Build dcraw.js'
 output = Popen([emscripten.EMCC, '-g','-lm', '-o', 'build/dcraw.js','-DNODEPS','dcraw/dcraw.c'], stdout=PIPE, stderr=STDOUT).communicate()[0]
 assert os.path.exists('build/dcraw.js'), 'Failed to build dcraw: ' + output
 
+# re-introduced timezone bug in emscripten lib - 
+# date.toString() doesn't contain timezone in Windows *urgh*
+bad_timezone_js = [
+    'winter.toString().match(/\(([A-Z]+)\)/)[1]',
+    'summer.toString().match(/\(([A-Z]+)\)/)[1]',
+    'date.toString().match(/\(([A-Z]+)\)/)[1]'
+]
+
 
 prepend_js =  """
-var root;
-root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
+(function() {
+    var root;
+    root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
 """
 
 append_js = """
-root.run = run;
-root.FS = FS;
+    root.run = run;
+    root.FS = FS;
+}());
 """
 
 f = open('build/dcraw.js', 'r')
 contents = f.read()
+# hard-code timezones to UTC
+for snippet in bad_timezone_js:
+    contents = contents.replace(snippet, '"UTC"');
 f.close()
 
 f = open('build/dcraw.js', 'w')
@@ -52,7 +65,6 @@ f.close()
 
 
 Popen(['java', '-jar', emscripten.CLOSURE_COMPILER,
-               # '--compilation_level', 'ADVANCED_OPTIMIZATIONS',
                '--js', 'build/dcraw.js', '--js_output_file', 'build/dcraw.min.js'], stdout=PIPE, stderr=STDOUT).communicate()
 
 

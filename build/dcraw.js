@@ -1,6 +1,7 @@
 
-var root;
-root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
+(function() {
+    var root;
+    root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
 // Note: Some Emscripten settings will significantly limit the speed of the generated code.
 // Note: Some Emscripten settings may limit the speed of the generated code.
 // TODO: " u s e   s t r i c t ";
@@ -385,11 +386,11 @@ var globalScope = this;
 //         -s EXPORTED_FUNCTIONS='["_func1","_func2"]'
 //
 // @param ident      The name of the C function (note that C++ functions will be name-mangled - use extern "C")
-// @param returnType The return type of the function, one of the JS types 'number' or 'string', or 'pointer' for any type of C pointer.
+// @param returnType The return type of the function, one of the JS types 'number' or 'string' (use 'number' for any C pointer).
 // @param argTypes   An array of the types of arguments for the function (if there are no arguments, this can be ommitted). Types are as in returnType.
-// @param args       An array of the arguments to the function, as native JS values (except for 'pointer', which is a 'number').
+// @param args       An array of the arguments to the function, as native JS values (as in returnType)
 //                   Note that string arguments will be stored on the stack (the JS string will become a C string on the stack).
-// @return           The return value, as a native JS value (except for 'pointer', which is a 'number').
+// @return           The return value, as a native JS value (as in returnType)
 function ccall(ident, returnType, argTypes, args) {
   function toC(value, type) {
     if (type == 'string') {
@@ -421,6 +422,20 @@ function ccall(ident, returnType, argTypes, args) {
   return fromC(func.apply(null, cArgs), returnType);
 }
 Module["ccall"] = ccall;
+
+// Returns a native JS wrapper for a C function. This is similar to ccall, but
+// returns a function you can call repeatedly in a normal way. For example:
+//
+//   var my_function = cwrap('my_c_function', 'number', ['number', 'number']);
+//   alert(my_function(5, 22));
+//   alert(my_function(99, 12));
+//
+function cwrap(ident, returnType, argTypes) {
+  // TODO: optimize this, eval the whole function once instead of going through ccall each time
+  return function() {
+    return ccall(ident, returnType, argTypes, Array.prototype.slice.call(arguments));
+  }
+}
 
 // Sets a value in memory in a dynamic way at run-time. Uses the
 // type data. This is the same as makeSetValue, except that
@@ -46168,7 +46183,7 @@ function _main($argc, $argv) {
   var __stackBase__  = STACKTOP; STACKTOP += 8; assert(STACKTOP % 4 == 0, "Stack is unaligned"); assert(STACKTOP < STACK_MAX, "Ran out of stack");
   var __label__;
   __label__ = -1; 
-  var setjmpTable = {70: function(value) { __label__ = 278; $365 = value },dummy: 0};
+  var setjmpTable = {"70": function(value) { __label__ = 278; $365 = value },dummy: 0};
   while(1) try { switch(__label__) {
     case -1: // $0
       var $1;
@@ -56879,8 +56894,8 @@ var _llvm_dbg_declare; // stub for _llvm_dbg_declare
       var summer = new Date(2000, 6, 1);
       HEAP32[((__daylight)>>2)]=Number(winter.getTimezoneOffset() != summer.getTimezoneOffset())
   
-      var winterName = winter.toString().match(/\(([A-Z]+)\)/)[1];
-      var summerName = summer.toString().match(/\(([A-Z]+)\)/)[1];
+      var winterName = "UTC";
+      var summerName = "UTC";
       var winterNamePtr = allocate(intArrayFromString(winterName), 'i8', ALLOC_NORMAL);
       var summerNamePtr = allocate(intArrayFromString(summerName), 'i8', ALLOC_NORMAL);
       __tzname = _malloc(2 * 4); // glibc does not need the double __
@@ -57074,7 +57089,7 @@ var _llvm_dbg_declare; // stub for _llvm_dbg_declare
       var dst = Number(start.getTimezoneOffset() != date.getTimezoneOffset());
       HEAP32[((tmPtr+offsets.tm_isdst)>>2)]=dst
   
-      var timezone = date.toString().match(/\(([A-Z]+)\)/)[1];
+      var timezone = "UTC";
       if (!(timezone in ___tm_timezones)) {
         ___tm_timezones[timezone] = allocate(intArrayFromString(timezone), 'i8', ALLOC_NORMAL);
       }
@@ -59930,5 +59945,6 @@ if (Module['postRun']) {
 // EMSCRIPTEN_GENERATED_FUNCTIONS: ["_int_to_float","_fc","_sget2","_sget4","_canon_600_fixed_wb","_my_memmem","_derror","_get2","_get4","_getint","_getreal","_read_shorts","_canon_600_color","_merror","_canon_600_coeff","_canon_600_auto_wb","_remove_zeroes","_canon_600_load_raw","_canon_s2is","_getbithuff","_make_decoder_ref","_make_decoder","_crw_init_tables","_canon_has_lowbits","_canon_compressed_load_raw","_ljpeg_start","_ljpeg_end","_ljpeg_diff","_ljpeg_row","_lossless_jpeg_load_raw","_canon_sraw_load_raw","_adobe_copy_pixel","_adobe_dng_load_raw_lj","_adobe_dng_load_raw_nc","_pentax_load_raw","_nikon_compressed_load_raw","_nikon_is_compressed","_nikon_e995","_nikon_e2100","_nikon_3700","_minolta_z2","_bayer","_fuji_load_raw","_ppm_thumb","_layer_thumb","_rollei_thumb","_rollei_load_raw","_phase_one_flat_field","_phase_one_correct","_phase_one_load_raw","_ph1_bithuff","_phase_one_load_raw_c","_hasselblad_load_raw","_leaf_hdr_load_raw","_sinar_4shot_load_raw","_imacon_full_load_raw","_packed_load_raw","_unpacked_load_raw","_nokia_load_raw","_pana_bits","_panasonic_load_raw","_olympus_load_raw","_minolta_rd175_load_raw","_quicktake_100_load_raw","_kodak_radc_load_raw","_kodak_jpeg_load_raw","_kodak_dc120_load_raw","_eight_bit_load_raw","_kodak_yrgb_load_raw","_kodak_262_load_raw","_kodak_65000_decode","_kodak_65000_load_raw","_kodak_ycbcr_load_raw","_kodak_rgb_load_raw","_kodak_thumb_load_raw","_sony_decrypt","_sony_load_raw","_sony_arw_load_raw","_sony_arw2_load_raw","_median4","_smal_decode_segment","_smal_v6_load_raw","_redcine_load_raw","_fill_holes","_smal_v9_load_raw","_bad_pixels","_subtract","_pseudoinverse","_gamma_curve","_cam_xyz_coeff","_hat_transform","_wavelet_denoise","_scale_colors","_pre_interpolate","_border_interpolate","_lin_interpolate","_vng_interpolate","_ppg_interpolate","_ahd_interpolate","_median_filter","_blend_highlights","_recover_highlights","_tiff_get","_parse_thumb_note","_parse_makernote","_parse_tiff_ifd","_romm_coeff","_get_timestamp","_parse_exif","_parse_gps","_parse_mos","_linear_table","_parse_kodak_ifd","_parse_tiff","_parse_minolta","_apply_tiff","_parse_external_jpeg","_ciff_block_1030","_parse_ciff","_parse_rollei","_parse_sinar_ia","_parse_phase_one","_parse_fuji","_parse_jpeg","_parse_riff","_parse_smal","_simple_coeff","_parse_cine","_parse_redcine","_foveon_gets","_parse_foveon","_adobe_coeff","_guess_byte_order","_find_green","_identify","_convert_to_rgb","_flip_index","_tiff_set","_fuji_rotate","_stretch","_tiff_head","_jpeg_thumb","_write_ppm_tiff","_main","_malloc","_tmalloc_small","_tmalloc_large","_sys_alloc","_free","_sys_trim","_calloc","_release_unused_segments","_init_mparams","_segment_holding","_init_top","_mmap_alloc","_init_bins","_prepend_alloc","_add_segment"]
 
 
-root.run = run;
-root.FS = FS;
+    root.run = run;
+    root.FS = FS;
+}());

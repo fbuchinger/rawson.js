@@ -14,7 +14,7 @@
     };  
     </script>
     
-    <script type="text/javascript" src="build/dcraw.js"></script>
+    <script type="text/javascript" src="build/dcraw.min.js"></script>
     <script type="text/javascript" src="lib/rawson.js"></script>
     <script type="text/javascript" src="external/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="external/jquery.event.drag-2.0.min.js"></script>
@@ -154,7 +154,7 @@
             
             jQuery.each(menuItems, function(itemSelector, action){
                 if ($menuItem.is(jQuery(itemSelector))){
-                    menuItems[action]();
+                    action();
                     return false;
                 }
             });
@@ -197,7 +197,7 @@
                 <!--<li><a href="#">Save as JPEG...</a></li>-->
             </ul>
           </li>
-          <li><a href="#">About</a></li>
+          <li><a href="https://github.com/fbuchinger/dcraw.js/wiki/rawson.js" target="_new">About</a></li>
         </ul>
 
           
