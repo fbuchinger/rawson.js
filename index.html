@@ -108,6 +108,21 @@
     .subheadline {
         font-size:12px;
         text-transform:uppercase;
+    }
+    
+    .footer {
+        color:#fff;
+        font-size:11px;
+        position:absolute;
+        width:auto;
+        padding-left:30%;
+        height:20px;
+        bottom:10px;
+        top:0;
+        left:0;
+        right:0;
+        margin:auto;
+        margin-bottom:0px;
     } 
 
 
@@ -198,6 +213,7 @@
             </ul>
           </li>
           <li><a href="https://github.com/fbuchinger/dcraw.js/wiki/rawson.js" target="_new">More info...</a></li>
+          <li><a href="https://github.com/fbuchinger/dcraw.js/" target="_new">Github repo...</a></li>
         </ul>
 
           
@@ -216,9 +232,8 @@
             <!-- PROJECT INFO-->
           <div class="well" style="margin-top:60px;">
             rawson.js is a <a href="http://en.wikipedia.org/wiki/Raw_image_format" target="_new">camera raw</a> previewer in javascript. It displays the embedded JPEG preview 
-            and metadata of a raw file, but not (yet) the captured sensor data. <br />rawson.js uses on <a href="">Dave Coffin's great dcraw library</a>, 
-            ported to Javascript by <a href="http://fbuchinger.github.com/">Franz Buchinger</a>
-            using <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>. (Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for his invaluable help)<br /> 
+            and metadata of a raw file, but not (yet) the captured sensor data. <br /><br /> 
+            <span class="label label-warning">Firefox/Chrome only - won't run in IE</span>
           </div>
           
           
@@ -306,13 +321,16 @@
           <div class="hero-unit well" id="preview-container">
             <img id="preview">
           </div>
+          
         </div>
+       
         </div><!--/span-->
    
       </div><!--/row-->
 
     </div><!--/.fluid-container-->
-
+ <div class="footer"><small>&copy; 2012 by <a href="http://fbuchinger.github.com/">Franz Buchinger</a> rawson.js uses on <a href="http://www.cybercom.net/~dcoffin/dcraw/">Dave Coffin's great dcraw library</a>, 
+            ported with <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>. (Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for his invaluable help)</small></div>
 
 </body>
 
