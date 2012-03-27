@@ -121,6 +121,15 @@
             '#rotate-left': function (){
                 rawViewer.rotatePreview('left');
             },
+            '#zoom-in': function (){
+                rawViewer.zoomPreview(true);
+            },
+            '#zoom-out': function (){
+                rawViewer.zoomPreview(false);
+            },
+            '#reset': function (){
+                rawViewer.resetPreview();
+            },
             '#open-file': function (){
                 rawViewer.removeAll();
                 $('#input').trigger('click');
@@ -174,9 +183,9 @@
                 <li><a id="rotate-left" href="#">Rotate left (L)</a></li>
                 <li><a id="rotate-right" href="#">Rotate right (R)</a></li>
                 <li class="divider"></li>
-                <li><a href="#">Zoom in (+)</a></li>
-                <li><a href="#">Zoom out (-)</a></li>
-                <li><a href="#">Fit to screen (F)</a></li>
+                <li><a id="zoom-in" href="#">Zoom in (+)</a></li>
+                <li><a id="zoom-out" href="#">Zoom out (-)</a></li>
+                <li><a id="reset" href="#">Reset (R)</a></li>
                 <li class="divider"></li>
                 <!--<li><a href="#">Save as JPEG...</a></li>-->
             </ul>
