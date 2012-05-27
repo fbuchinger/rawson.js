@@ -1,0 +1,317 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>rawson.js - a camera raw previewer in javascript</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="external/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="external/bootstrap/css/darkstrap.css"/>
+    <script type="text/javascript">
+    var Module = {
+      noInitialRun: true,
+      printErr: function(data){alert(data)}
+    };  
+    </script>
+    
+    <script type="text/javascript" src="build/dcraw.min.js"></script>
+    <script type="text/javascript" src="lib/rawson.util.js"></script>
+    <script type="text/javascript" src="lib/rawson.js"></script>
+    <script type="text/javascript" src="lib/rawson.viewer.js"></script>
+    <script type="text/javascript" src="lib/rawson.plugins.js"></script>
+    <script type="text/javascript" src="lib/rawson.preview.js"></script>
+    <script type="text/javascript" src="external/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="external/jquery.event.drag-2.0.min.js"></script>
+    <script type="text/javascript" src="external/bootstrap/js/bootstrap.min.js"></script>
+   
+    <style>
+
+    body {
+        font-family: Arial, Helvetica,Verdana,sans-serif;
+    }
+    #content {
+        margin-left:20%;
+        margin-right:20%;
+    }
+
+    #preview-container {
+        position:relative;
+        overflow: hidden;
+        top:50px;
+    }
+
+    #preview-container img, #preview-container canvas {
+        display:block;
+        position: relative;
+        background-color: green;
+        /*border: none;
+        width: 800px;
+        height: 600px;*/
+    }
+
+    .drag-hint {
+      bottom: 0;
+      height: 40px;
+      left: 0;
+      margin: auto;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 300px;
+      font-size:24px;
+      color:#ddd;
+    }
+    
+    .thumbnails {
+        height: 200px;
+        overflow: auto;
+    }
+    
+    .hero-unit {
+        background-color: inherit;
+        padding: 0;
+        border: 0px dashed #ddd;
+    }
+    
+    
+    .sidebar-nav {
+        padding: 9px 0;
+    }
+    
+    .subheadline {
+        font-size:12px;
+        text-transform:uppercase;
+    }
+    
+    .footer {
+        color:#fff;
+        font-size:11px;
+        position:absolute;
+        width:auto;
+        padding-left:30%;
+        height:20px;
+        bottom:10px;
+        top:0;
+        left:0;
+        right:0;
+        margin:auto;
+        margin-bottom:0px;
+    } 
+
+
+    
+    </style>
+<script>
+    
+    function handleFiles(files) {
+        rawViewer.readFiles(files);
+    }  
+
+    function init(){
+       
+    }
+    
+    
+    $(function(){
+        
+        window.rawViewer = new Rawson.Viewer('preview');
+        
+        var menuItems = {
+            '#rotate-right': function (){
+                rawViewer.rotatePreview('right');
+            },
+            '#rotate-left': function (){
+                rawViewer.rotatePreview('left');
+            },
+            '#zoom-in': function (){
+                rawViewer.zoomPreview(true);
+            },
+            '#zoom-out': function (){
+                rawViewer.zoomPreview(false);
+            },
+            '#reset': function (){
+                rawViewer.resetPreview();
+            },
+            '#open-file': function (){
+                rawViewer.removeAll();
+                $('#input').trigger('click');
+            },
+            '#add-file': function (){
+                $('#input').trigger('click');
+            },
+            '#remove-all': function (){
+                rawViewer.removeAll();
+            }
+        };
+        
+        $("#rawson-menu").on("click", "a", function() {
+            var $menuItem = $(this);
+            
+            jQuery.each(menuItems, function(itemSelector, action){
+                if ($menuItem.is(jQuery(itemSelector))){
+                    action();
+                    return false;
+                }
+            });
+          
+        });
+        
+
+    });
+
+	</script>
+</head>
+
+<body onload="init();">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="#">rawson.js <span class="subheadline">a camera raw previewer in javascript</span></a>
+          
+          <ul class="nav" id="rawson-menu">
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Files</a>
+            <ul class="dropdown-menu" id="file-menu">
+                <li><a id="open-file" href="#">Open ...</a></li>
+                <li><a href="#">Add ...</a></li>
+                <li><a id="remove-all" href="#">Clear all</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Image</a>
+            <ul class="dropdown-menu">
+                
+                <li><a id="rotate-left" href="#">Rotate left (L)</a></li>
+                <li><a id="rotate-right" href="#">Rotate right (R)</a></li>
+                <li class="divider"></li>
+                <li><a id="zoom-in" href="#">Zoom in (+)</a></li>
+                <li><a id="zoom-out" href="#">Zoom out (-)</a></li>
+                <li><a id="reset" href="#">Reset (R)</a></li>
+                <li class="divider"></li>
+                <!--<li><a href="#">Save as JPEG...</a></li>-->
+            </ul>
+          </li>
+          <li><a href="https://github.com/fbuchinger/rawson.js/wiki/rawson.js" target="_new">About rawson.js...</a></li>
+          <li><a href="https://github.com/fbuchinger/rawson.js/" target="_new">Github repo...</a></li>
+        </ul>
+
+          
+          <!--<div class="nav-collapse">
+            <p class="navbar-text pull-right"></p>
+          </div>-->
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+            
+            <!-- PROJECT INFO-->
+          <div class="well" style="margin-top:60px;">
+            rawson.js is a <a href="http://en.wikipedia.org/wiki/Raw_image_format" target="_new">camera raw</a> previewer in javascript. It displays the embedded JPEG preview 
+            and metadata of a raw file, but not (yet) the captured sensor data. <br /><br /> 
+            <span class="label label-warning">Firefox/Chrome only - won't run in IE</span>
+          </div>
+          
+          
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                <li class="active"><a href="#1" data-toggle="tab">Files</a></li>
+                <li><a href="#2" data-toggle="tab">Metadata</a></li>
+                <li><a href="#3" data-toggle="tab">Raw Processing</a></li>
+                </ul>
+                <div class="tab-content">
+                    
+                    <!-- Thumbnail Pane-->
+                    <div class="tab-pane active" id="1">
+                        <label for="file">Add Camera Raw File(s)...</label><input type="file" id="input" multiple="multiple" onchange="handleFiles(this.files)">
+                        <ul class="thumbnails">
+                            <script type="x-dcraw-template" id="thumbnail-template">
+                            <li class="span6">
+                                <div class="thumbnail">
+                                <img src="http://placehold.it/260x180" title="click on thumbnail to open in viewer" style="cursor:hand;cursor:pointer;">
+                                <h5>fName</h5>
+                                </div>
+                            </li>
+                            </script>
+                        </ul>
+                    </div>
+                    
+                    <!-- Metadata Pane -->
+                    <div class="tab-pane" id="2">
+                        <h3>Image Metadata</h3>
+                        <table id="metadata-info" class="table-condensed table-striped">
+                            <thead>
+                              <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                     <!-- Raw Processor -->
+                    <div class="tab-pane" id="3">
+                        
+                        <h3>Raw Processing</h3>
+                        not yet...
+                            <!--<div class="alert">
+                            <a class="close">×</a>
+                            <strong>Warning!</strong> The commands on this tab are CPU-intensive, time-consuming and can likely crash or freeze your browser!
+                            </div>
+                            <div class="well">
+                                <label for="white-balance">White Balance</label>
+                                <select id="white-balance">
+                                    <option value="-w">Camera</option>
+                                    <option value="-a">Average</option>
+                                    <option value="-r">Own...</option>
+                                </select>
+                                <label for="highlights">Highlights</label>
+                                <select id="highlights">
+                                    <option value="-H 0">Clip to white</option>
+                                    <option value="-H 1">Preserve (pink shades)</option>
+                                    <option value="-H 2">Blend (fade to white)</option>
+                                </select>
+                                <label for="interpolation">Interpolation</label>
+                                <select id="interpolation">
+                                    <option value="-q 0">Bilinear (fast, low quality)</option>
+                                    <option value="-q 1">Variable Number of Gradients (VNG)</option>
+                                    <option value="-q 2">Patterned Pixel Grouping (PPG)</option>
+                                    <option value="-q 3">Adaptive Homogeneity Directed (AHG)</option>
+                                </select>
+                                <label for="half-size">Half-size interpolation (recommended)</label>
+                                <input type="checkbox" value="-h" checked>
+                                 <label for="rgb-four-colors">Interpolate RGB as four colors (VNG & AHD only)</label>
+                                <input type="checkbox" value="-f"><br /><br />
+                                <button>Process!</button>
+                            </div>-->
+                    </div>
+                    
+                    
+                </div>
+            </div>
+          
+        </div><!--/span-->
+        <div class="span9">
+          <div class="hero-unit well" id="preview-container">
+            <img id="preview">
+          </div>
+          
+        </div>
+       
+        </div><!--/span-->
+   
+      </div><!--/row-->
+
+    </div><!--/.fluid-container-->
+ <div class="footer"><small>&copy; 2012 by <a href="http://fbuchinger.github.com/">Franz Buchinger</a> rawson.js uses on <a href="http://www.cybercom.net/~dcoffin/dcraw/">Dave Coffin's great dcraw library</a>, 
+            ported with <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>. (Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for his invaluable help)</small></div>
+
+</body>
+
+</html>

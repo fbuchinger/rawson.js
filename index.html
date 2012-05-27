@@ -1,315 +1,361 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
-<head>
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
     <title>rawson.js - a camera raw previewer in javascript</title>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
     <link rel="stylesheet" type="text/css" href="external/bootstrap/css/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="external/bootstrap/css/darkstrap.css"/>
-    <script type="text/javascript">
-    var Module = {
-      noInitialRun: true,
-      printErr: function(data){alert(data)}
-    };  
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      
+      .hero-unit {
+        text-align: center;
+      }
+        
+      .rawson-logo {
+          background-image: url(site/rawsonjs_logos.jpg);
+          width: 727px;
+          height: 150px;
+       }
+    </style>
+    <link href="external/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+    <script>
+        $(function(){
+            $('.navbar').scrollspy();
+        });
     </script>
     
-    <script type="text/javascript" src="build/dcraw.min.js"></script>
-    <script type="text/javascript" src="lib/rawson.js"></script>
-    <script type="text/javascript" src="external/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="external/jquery.event.drag-2.0.min.js"></script>
-    <script type="text/javascript" src="external/bootstrap/js/bootstrap.min.js"></script>
-   
-    <style>
+  </head>
 
-    body {
-        font-family: Arial, Helvetica,Verdana,sans-serif;
-    }
-    #content {
-        margin-left:20%;
-        margin-right:20%;
-    }
-
-    #preview-container {
-        position:relative;
-        overflow: hidden;
-        top:50px;
-    }
-
-    #preview-container img {
-        display:block;
-        position: relative;
-        background-color: green;
-        /*border: none;
-        width: 800px;
-        height: 600px;*/
-    }
-
-    .drag-hint {
-      bottom: 0;
-      height: 40px;
-      left: 0;
-      margin: auto;
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 300px;
-      font-size:24px;
-      color:#ddd;
-    }
-    
-    .thumbnails {
-        height: 200px;
-        overflow: auto;
-    }
-    
-    .hero-unit {
-        background-color: inherit;
-        padding: 0;
-        border: 0px dashed #ddd;
-    }
-    
-    
-    .sidebar-nav {
-        padding: 9px 0;
-    }
-    
-    .subheadline {
-        font-size:12px;
-        text-transform:uppercase;
-    }
-    
-    .footer {
-        color:#fff;
-        font-size:11px;
-        position:absolute;
-        width:auto;
-        padding-left:30%;
-        height:20px;
-        bottom:10px;
-        top:0;
-        left:0;
-        right:0;
-        margin:auto;
-        margin-bottom:0px;
-    } 
-
-
-    
-    </style>
-<script>
-    
-    function handleFiles(files) {
-        for (var i = 0; i < files.length; i++){
-            rawViewer.readFile(files[i]);
-        }
-    }  
-
-    function init(){
-       
-    }
-    
-    
-    $(function(){
-        
-        window.rawViewer = new Rawson.Viewer('preview');
-        
-        var menuItems = {
-            '#rotate-right': function (){
-                rawViewer.rotatePreview('right');
-            },
-            '#rotate-left': function (){
-                rawViewer.rotatePreview('left');
-            },
-            '#zoom-in': function (){
-                rawViewer.zoomPreview(true);
-            },
-            '#zoom-out': function (){
-                rawViewer.zoomPreview(false);
-            },
-            '#reset': function (){
-                rawViewer.resetPreview();
-            },
-            '#open-file': function (){
-                rawViewer.removeAll();
-                $('#input').trigger('click');
-            },
-            '#add-file': function (){
-                $('#input').trigger('click');
-            },
-            '#remove-all': function (){
-                rawViewer.removeAll();
-            }
-        };
-        
-        $("#rawson-menu").on("click", "a", function() {
-            var $menuItem = $(this);
-            
-            jQuery.each(menuItems, function(itemSelector, action){
-                if ($menuItem.is(jQuery(itemSelector))){
-                    action();
-                    return false;
-                }
-            });
-          
-        });
-        
-
-    });
-
-	</script>
-</head>
-
-<body onload="init();">
+  <body data-spy="scroll">
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="brand" href="#">rawson.js <span class="subheadline">a camera raw previewer in javascript</span></a>
-          
-          <ul class="nav" id="rawson-menu">
-            <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Files</a>
-            <ul class="dropdown-menu">
-                <li><a id="open-file" href="#">Open ...</a></li>
-                <li><a href="#">Add ...</a></li>
-                <li><a id="remove-all" href="#">Clear all</a></li>
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">rawson.js - a camera raw previewer in javascript</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#rawformats">Supported RAW Files</a></li>
             </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Image</a>
-            <ul class="dropdown-menu">
-                
-                <li><a id="rotate-left" href="#">Rotate left (L)</a></li>
-                <li><a id="rotate-right" href="#">Rotate right (R)</a></li>
-                <li class="divider"></li>
-                <li><a id="zoom-in" href="#">Zoom in (+)</a></li>
-                <li><a id="zoom-out" href="#">Zoom out (-)</a></li>
-                <li><a id="reset" href="#">Reset (R)</a></li>
-                <li class="divider"></li>
-                <!--<li><a href="#">Save as JPEG...</a></li>-->
-            </ul>
-          </li>
-          <li><a href="https://github.com/fbuchinger/rawson.js/wiki/rawson.js" target="_new">About rawson.js...</a></li>
-          <li><a href="https://github.com/fbuchinger/rawson.js/" target="_new">Github repo...</a></li>
-        </ul>
-
-          
-          <!--<div class="nav-collapse">
-            <p class="navbar-text pull-right"></p>
-          </div>-->
+          </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
+    <div class="container">
 
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3">
-            
-            <!-- PROJECT INFO-->
-          <div class="well" style="margin-top:60px;">
-            rawson.js is a <a href="http://en.wikipedia.org/wiki/Raw_image_format" target="_new">camera raw</a> previewer in javascript. It displays the embedded JPEG preview 
-            and metadata of a raw file, but not (yet) the captured sensor data. <br /><br /> 
-            <span class="label label-warning">Firefox/Chrome only - won't run in IE</span>
-          </div>
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit offset1 span8">
+          <div class="rawson-logo"></div>
+        
+        <p>preview camera raw photos in your browser without software or plugin install </p>
+        <a class="btn btn-primary btn-large" href="index.html">Try it now...</a>
+        <a class="btn btn-large" href="https://github.com/fbuchinger/rawson.js/zipball/master">Download</a>
+        <a class="btn btn-large" href="https://github.com/fbuchinger/rawson.js">Visit rawson.js@github</a>
+      </div>
+
+      <!-- Example row of columns -->
+      <div class="row">
           
-          
-            <div class="tabbable">
-                <ul class="nav nav-tabs">
-                <li class="active"><a href="#1" data-toggle="tab">Files</a></li>
-                <li><a href="#2" data-toggle="tab">Metadata</a></li>
-                <li><a href="#3" data-toggle="tab">Raw Processing</a></li>
-                </ul>
-                <div class="tab-content">
-                    
-                    <!-- Thumbnail Pane-->
-                    <div class="tab-pane active" id="1">
-                        <label for="file">Add Camera Raw File(s)...</label><input type="file" id="input" multiple="multiple" onchange="handleFiles(this.files)">
-                        <ul class="thumbnails">
-                            <script type="x-dcraw-template" id="thumbnail-template">
-                            <li class="span6">
-                                <div class="thumbnail">
-                                <img src="http://placehold.it/260x180" title="click on thumbnail to open in viewer" style="cursor:hand;cursor:pointer;">
-                                <h5>fName</h5>
-                                </div>
-                            </li>
-                            </script>
-                        </ul>
-                    </div>
-                    
-                    <!-- Metadata Pane -->
-                    <div class="tab-pane" id="2">
-                        <h3>Image Metadata</h3>
-                        <table id="metadata-info" class="table-condensed table-striped">
-                            <thead>
-                              <tr>
-                                <th>Field</th>
-                                <th>Value</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                     <!-- Raw Processor -->
-                    <div class="tab-pane" id="3">
-                        
-                        <h3>Raw Processing</h3>
-                        not yet...
-                            <!--<div class="alert">
-                            <a class="close">×</a>
-                            <strong>Warning!</strong> The commands on this tab are CPU-intensive, time-consuming and can likely crash or freeze your browser!
-                            </div>
-                            <div class="well">
-                                <label for="white-balance">White Balance</label>
-                                <select id="white-balance">
-                                    <option value="-w">Camera</option>
-                                    <option value="-a">Average</option>
-                                    <option value="-r">Own...</option>
-                                </select>
-                                <label for="highlights">Highlights</label>
-                                <select id="highlights">
-                                    <option value="-H 0">Clip to white</option>
-                                    <option value="-H 1">Preserve (pink shades)</option>
-                                    <option value="-H 2">Blend (fade to white)</option>
-                                </select>
-                                <label for="interpolation">Interpolation</label>
-                                <select id="interpolation">
-                                    <option value="-q 0">Bilinear (fast, low quality)</option>
-                                    <option value="-q 1">Variable Number of Gradients (VNG)</option>
-                                    <option value="-q 2">Patterned Pixel Grouping (PPG)</option>
-                                    <option value="-q 3">Adaptive Homogeneity Directed (AHG)</option>
-                                </select>
-                                <label for="half-size">Half-size interpolation (recommended)</label>
-                                <input type="checkbox" value="-h" checked>
-                                 <label for="rgb-four-colors">Interpolate RGB as four colors (VNG & AHD only)</label>
-                                <input type="checkbox" value="-f"><br /><br />
-                                <button>Process!</button>
-                            </div>-->
-                    </div>
-                    
-                    
-                </div>
-            </div>
-          
-        </div><!--/span-->
-        <div class="span9">
-          <div class="hero-unit well" id="preview-container">
-            <img id="preview">
-          </div>
-          
-        </div>
+          <div class="span4 offset2">
+              <h3>written in 100% Javascript</h3>
+              <p>rawson.js has been written in 100% Javascript, you just need a modern browser to run in. No software downloads or plugin installs.</p>
+              <h3>less than 500kb in size</h3>
+              <p>rawson.js is just 500kb in size, while desktop raw processors require you to download dozens of megabytes</p>
+              <h3>no traces on your system</h3>
+          <p>rawson.js is the perfect choice for opening raw files on guest computers. 
+          It doesn't force you to store or convert files locally, and its traces can be quickly removed by clearing the browser cache.</p>
+           </div>
+    
+        <div class="span4">
+          <h3>zero-install, cross-platform</h3>
+          <p>Enjoy the rawson.js on every platform, without prior installation. rawson.js runs in Firefox 3.6+ or Chrome 8+ on Windows, Linux or MacOS X</p>
+          <h3>performs fast</h3>
+          <p>(opening a file takes usually less than 5 seconds on my Lenovo ThinkPad Edge 13 netbook)</p>
+           <h3>Supports more than 400 cameras</h3>
+          <p>Open .CR2, .CRW, .ORF, .NEF and many files more from manufacturers like Canon, Nikon, Sony, Minolta, Olympus and Hasselblad, 
+          powered by a javascript port of the leading open source raw decoder <a href="http://www.cybercom.net/~dcoffin/dcraw/">dcraw</a>.</p>
+       </div>
        
-        </div><!--/span-->
-   
-      </div><!--/row-->
+      </div>
 
-    </div><!--/.fluid-container-->
- <div class="footer"><small>&copy; 2012 by <a href="http://fbuchinger.github.com/">Franz Buchinger</a> rawson.js uses on <a href="http://www.cybercom.net/~dcoffin/dcraw/">Dave Coffin's great dcraw library</a>, 
-            ported with <a href="https://github.com/kripken/emscripten/wiki">emscripten</a>. (Many thanks to <a href="https://github.com/kripken">Alon Zakai</a> for his invaluable help)</small></div>
+      
+     <section id="about">
+        <div class="page-header offset1">
+            <h1>
+                About <small>Why I wrote rawson.js</small>
+            </h1>
+        </div>
+        <div class="row">
+            <div class="span8 offset2">
+                Being a passionate digital photographer, I was always annoyed by bloated desktop photo processing tools. The browser photo editing
+                experience was disappointing too, because it limits the user to the lossy JPEG format and thus prevents any serious editing. With rawson.js
+                I want to overcome these limitations and create a full-fledged digital darkroom in the browser. 
+            </div>
+        </div>
+    </section>
+    
+    <section id="features">
+        <div class="page-header offset1">
+            <h1>
+                Features <small>What to expect from rawson.js</small>
+            </h1>
+        </div>
+        <div class="row">
+            <div class="span8 offset2">
+                <dl>
+                    <dt>browser-based previews of all common RAW formats</dt>
+                    <dd>Thanks to its dcraw "engine", rawson.js should be capable of displaying previews of all common raw files in your browser</dd>
+                    <dt>easy-to-use editing functions</dt>
+                    <dd>zoom, scale and rotate the opened photo. More editing functions can be added via an <a href="https://github.com/fbuchinger/rawson.js/wiki/Javascript-API">extensible plugin interface.</a></dd>
+                    <dt>saving functions</dt>
+                    <dd>rawson.js runs in your browser, but it doesn't destroy your work. At any time, you can download a JPEG copy of the photo you are editing. 
+                    Image saving is handled purely by Javascript, you don't need any server-side component for that. New file formats can be added via a <a href="https://github.com/fbuchinger/rawson.js/wiki/Javascript-API">plugin interface</a></dd>
+                    <dt>post to photosharing sites</dt>
+                    <dd>rawson.js allows you to post to edited photo directly to various photosharing sites. Currently, we support <a href="http://img.ur">img.ur</a>, but more photosharing
+                    services can be added via a <a href="https://github.com/fbuchinger/rawson.js/wiki/Javascript-API">plugin interface</a>.</dd>
+                  </dl>
+            </div>
+        </div>
+    </section>
+      
+    <section id="faq">
+        <div class="page-header offset1">
+            <h1>
+                FAQ <small>frequently asked questions</small>
+            </h1>
+        </div>
+        <div class="row">
+            <div class="span8 offset2">
+            <h3>When I open my RAW file in rawson.js, nothing or just a tiny image is shown. What happened?</h3>
 
-</body>
+            <p>rawson.js currently <b>only accesses the embedded preview image</b> of the raw file, 
+                so it can't show anything if the raw file has no preview file embedded. To test this, you can run <code>dcraw -e &lt;raw file&gt;</code>.
+                If no output is producted, then the raw file has no preview image) </p>
+           <h3>Will rawson.js run on Internet Explorer?</h3>
 
-</html>
+            <p>The rawson.js viewer application will not run on current versions of Internet Explorer
+             (IE 9 or less), because IE doesn't support the W3C File API for local file access. 
+             This might change in IE 10.</p>
+             
+            <h3>Can I edit my camera raw photos in rawson.js like I do in Lightroom or RawTherapee?</h3>
+
+            <p> Not yet. Currently rawson.js can only display the embeded metadata of the raw file 
+                (JPEG preview + camera settings), but not the actual sensor data. Javascript wasn't designed for 
+                computationally intensive tasks and demosaicing a 20-megapixel raw file is definitely one. 
+                Don't believe me? In my tests the raw-to-bitmap conversion with dcraw.js took more than 10 minutes, 
+                the same conversion with dcraw.c was done in less than 20 seconds.</p>
+
+            <p>But there is some hope on the horizon: via WebGL, Javascript can use the unmatched 
+            computing power of modern graphics cards (GPUs) in combination with a typed shader language (GLGS). 
+            However, WebGL is still somewhat experimental and shader coding is a completely different story.</p>
+
+            <h3>I receive a "script executing warning" when opening a raw file. What can I do?</h3>
+
+            <p>Update to the latest version of Firefox or Chrome, as the Javascript performance usually improves significantly between the versions.</p>
+
+            <p>Make sure you have closed/deactivated Firebug or the Chrome Developer Extensions. Especially Firebug can massively slow down rawson.js</p>
+
+            <p>Cross your fingers and try another raw file ;)</p>
+        </div>
+        </div>
+    </section>
+    
+    <section id="rawformats">
+        <div class="page-header offset1">
+            <h1>
+                Supported File Formats <small>raw file formats you can open with rawson</small>
+            </h1>
+        </div>
+        <div class="row">
+            <div class="span8 offset2">
+                <p>The following table shows all Camera RAW file types, that are (theoretically) supported by rawson.js. Because the RAW decoding component of rawson is a direct port of
+                dcraw.c, it inherits all functionality from it. 
+                <p>For a detailed list of supported cameras, consult <a href="http://www.cybercom.net/~dcoffin/dcraw/#cameras">dcraw's supported cameras page.</a><br />
+                 The file extensions and their descriptions have been taken from <a href="http://www.sno.phy.queensu.ca/~phil/exiftool/#supported">ExifTool's Supported File Types</a> </p>
+                
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Extension</th>
+                                <th>File Format /Manufacturer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>.3fr</td>
+                                <td>Hasselblad 3F Raw Image</td>
+                            </tr>
+                            <tr>
+                                <td>.ari</td>
+                                <td><a href="http://archiv.arri.de/arriraw/index.html">ARRI Raw Image</a></td>
+                            </tr>
+                            <tr>
+                                <td>.arw</td>
+                                <td>Sony Alpha RAW</td>
+                            </tr>
+                            <tr>
+                                <td>.crw, .ciff</td>
+                                <td><a href="http://www.sno.phy.queensu.ca/~phil/exiftool/canon_raw.html">Camera RAW Image File Format (CIFF)</a></td>
+                            </tr>
+                            <tr>
+                                <td>.cr2</td>
+                                <td>Canon Raw 2</td>
+                            </tr>
+                            <tr>
+                                <td>.dcr</td>
+                                <td>Kodak Digital Camera RAW</td>
+                            </tr>
+                            <tr>
+                                <td>.dng</td>
+                                <td>Adobe Digital Negative</td>
+                            </tr>
+                            <tr>
+                                <td>.eip</td>
+                                <td>Capture One Enhanced Image Package</td>
+                            </tr>
+                            <tr>
+                                <td>.fff</td>
+                                <td>Hasselblad Flexible File Format</td>
+                            </tr>
+                            <tr>
+                                <td>.iiq</td>
+                                <td>Phase One Intelligent Image Quality RAW</td>
+                            </tr>
+                            <tr>
+                                <td>.k25</td>
+                                <td>Kodak DC25 RAW</td>
+                            </tr>
+                            <tr>
+                                <td>.kdc</td>
+                                <td>Kodak Digital Camera RAW</td>
+                            </tr>
+                            <tr>
+                                <td>.mef</td>
+                                <td>Mamiya (RAW) Electronic Format </td>
+                            </tr>
+                            <tr>
+                                <td>.mos</td>
+                                <td>Creo Leaf Mosaic</td>
+                            </tr>
+                            <tr>
+                                <td>.mrw</td>
+                                <td>Minolta RAW</td>
+                            </tr>
+                            <tr>
+                                <td>.nef</td>
+                                <td>Nikon (RAW) Electronic Format</td>
+                            </tr>
+                            <tr>
+                                <td>.nrw</td>
+                                <td>Nikon RAW (2)</td>
+                            </tr>
+                            <tr>
+                                <td>.orf</td>
+                                <td>Olympus RAW Format</td>
+                            </tr>
+                            <tr>
+                                <td>.pef</td>
+                                <td>Pentax (RAW) Electronic Format</td>
+                            </tr>
+                            <tr>
+                                <td>.raf</td>
+                                <td>FujiFilm RAW Format</td>
+                            </tr>
+                            <tr>
+                                <td>.raw</td>
+                                <td>Kyocera Contax N Digital RAW or Panasonic RAW</td>
+                            </tr>
+                            <tr>
+                                <td>.rw1</td>
+                                <td>Panasonic Raw 1</td>
+                            </tr>
+                            <tr>
+                                <td>.rw2</td>
+                                <td>Panasonic Raw 2</td>
+                            </tr>
+                            <tr>
+                                <td>.rwz</td>
+                                <td>Rawzor compressed image</td>
+                            </tr>
+                            <tr>
+                                <td>.sr2</td>
+                                <td>Sony RAW 2</td>
+                            </tr>
+                            <tr>
+                                <td>.srf</td>
+                                <td>Sony RAW Format</td>
+                            </tr>
+                            <tr>
+                                <td>.srw</td>
+                                <td>Samsung RAW Format</td>
+                            </tr>
+                            <tr>
+                                <td>.x3f</td>
+                                <td>Sigma/Foveon RAW Format</td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+    </section>
+    
+        
+        
+      <footer>
+        <p>© Franz Buchinger 2012, dcraw &copy; by Dave Coffin, rawson logo by Gabriela Lucano</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="external/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="external/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="external/bootstrap/js/bootstrap-scrollspy.js"></script>
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-32163671-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+
+  
+
+</body></html>
