@@ -24,10 +24,13 @@
     <script type="text/javascript" src="lib/rawson.controls.js"></script>
     <script type="text/javascript" src="lib/controls/menu.js"></script>
     <script type="text/javascript" src="lib/controls/imageposter.js"></script>
+    <script type="text/javascript" src="lib/controls/filedragndrop.js"></script>
     <script type="text/javascript" src="lib/controls/fileopener.js"></script>
     <script type="text/javascript" src="lib/controls/imagesaver.js"></script>
+    <script type="text/javascript" src="lib/controls/fileprogress.js"></script>
     <script type="text/javascript" src="lib/controls/thumbnaillist.js"></script>
     <script type="text/javascript" src="lib/controls/metadatatable.js"></script>
+    <script type="text/javascript" src="lib/controls/zoom.js"></script>
     <script type="text/javascript" src="lib/rawson.services.js"></script>
     <script type="text/javascript" src="lib/rawson.preview.js"></script>
     <script type="text/javascript" src="external/jquery.event.drag-2.0.min.js"></script>
@@ -116,18 +119,14 @@
     </style>
 <script>
     
-    function handleFiles(files) {
-        rawViewer.readFiles(files);
-    }  
-
-    function init(){
-       
-    }
-    
     
     $(function(){
         
         window.rawViewer = new Rawson.Viewer('preview',{
+            formats: {
+                read: ['JPEG', 'PNG','RAW'],
+                write: ['JPEG', 'PNG'],
+            },
             controls: [
                 new Rawson.Control.Menu({
                     container: '#menu-container',
@@ -139,13 +138,11 @@
                         {id:'rawson-github', parentItem: 'rawson', label:'Github Repository', href:'https://github.com/fbuchinger/rawson.js/'},
                     ]
                 }),
-                new Rawson.Control.FileOpener({
-                    formats: ['JPEG','PNG','RAW'],
-                    fileInputContainer: '#fileinput-container'
-                }),
-                new Rawson.Control.ImageSaver({
-                    formats: ['JPEG','PNG']
-                }),
+                new Rawson.Control.FileProgress(),
+                new Rawson.Control.FileOpener({fileInputContainer: '#fileinput-container'}),
+                new Rawson.Control.FileDragNDrop(),
+                new Rawson.Control.Zoom(),
+                new Rawson.Control.ImageSaver({ formats: ['JPEG','PNG']}),
                 new Rawson.Control.ThumbnailList({container: '#thumbnail-list'}),
                 new Rawson.Control.MetadataTable({container: '#metadata-pane'})
             ]
@@ -155,7 +152,7 @@
 	</script>
 </head>
 
-<body onload="init();">
+<body>
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">

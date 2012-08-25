@@ -17,13 +17,30 @@
       
       .hero-unit {
         text-align: center;
+        height:300px;
+        padding-bottom: 0px;
       }
-        
+      .rawson-screenshot {
+          background-image: url(site/rawson_screenshot.jpg);
+          background-position: -10px -220px;
+          width: 890px;
+          height: 360px;
+          margin-left: -60px;
+          margin-top: -60px;
+          position: absolute;
+          opacity: 0.7;
+          z-index:0;
+       }
+    
       .rawson-logo {
-          background-image: url(site/rawson-logo.png);
-          background-color: white;
-          width: 727px;
-          height: 150px;
+          background-image: url(site/rawsonjs.png);
+          background-repeat: no-repeat;
+          padding-top: 160px;
+          width: 764px;
+          height: 300px;
+          position: absolute;
+          opacity: 1;
+          z-index:1;
        }
     </style>
     <link href="external/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
@@ -75,12 +92,18 @@
 
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit offset1 span8">
-          <div class="rawson-logo"></div>
-        
-        <p>preview camera raw photos in your browser without software or plugin install </p>
-        <a class="btn btn-primary btn-large" href="rawson.html">Try it now...</a>
-        <a class="btn btn-large" href="https://github.com/fbuchinger/rawson.js/zipball/master">Download</a>
-        <a class="btn btn-large" href="https://github.com/fbuchinger/rawson.js">Visit rawson.js@github</a>
+          
+          <div class="rawson-logo">
+             <p style="background-color:red; color: white;">preview <a href="http://en.wikipedia.org/wiki/Raw_image_format" target="_new">camera raw</a> photos in your browser without software or plugin install </p>
+            <a class="btn btn-primary btn-large" href="rawson.html">Try it now...</a>
+            <a class="btn btn-large" href="https://github.com/fbuchinger/rawson.js/zipball/master">Download</a>
+            <a class="btn btn-large" href="https://github.com/fbuchinger/rawson.js">Visit rawson.js@github</a>
+          </div>
+                  <div class="rawson-screenshot"></div>
+        <div class="rawson-claim">
+           
+        </div>
+
       </div>
 
       <!-- Example row of columns -->
@@ -97,13 +120,16 @@
            </div>
     
         <div class="span4">
-          <h3>zero-install, cross-platform</h3>
-          <p>Enjoy the rawson.js on every platform, without prior installation. rawson.js runs in Firefox 3.6+ or Chrome 8+ on Windows, Linux or MacOS X</p>
-          <h3>performs fast</h3>
-          <p>(opening a file takes usually less than 5 seconds on my Lenovo ThinkPad Edge 13 netbook)</p>
+            
            <h3>Supports more than 400 cameras</h3>
           <p>Open .CR2, .CRW, .ORF, .NEF and many files more from manufacturers like Canon, Nikon, Sony, Minolta, Olympus and Hasselblad, 
           powered by a javascript port of the leading open source raw decoder <a href="http://www.cybercom.net/~dcoffin/dcraw/">dcraw</a>.</p>
+          
+          <h3>zero-install, cross-platform</h3>
+          <p>Enjoy the rawson.js on every platform, without prior installation. rawson.js runs in Firefox 3.6+ or Chrome 8+ on Windows, Linux or MacOS X</p>
+          
+          <h3>reasonable performance</h3>
+          <p>Opening a RAW file takes about 5 seconds on my moderately equiped Lenovo ThinkPad Edge 13 laptop (<a href="http://www.cpubenchmark.net/cpu_lookup.php?cpu=AMD+Turion+II+Neo+K685+Dual-Core" target="_new">AMD K685</a>, 6GB RAM)</p>
        </div>
        
       </div>
@@ -186,6 +212,17 @@
             <p>Make sure you have closed/deactivated Firebug or the Chrome Developer Extensions. Especially Firebug can massively slow down rawson.js</p>
 
             <p>Cross your fingers and try another raw file ;)</p>
+            
+            <h3>Any reason for the name "rawson.js"? What kind of animal is shown in the rawson.js logo?</h3>
+            
+            <p>"Rawson" isn't just a cool-sounding word starting with "RAW...", it is in fact the <a href="http://en.wikipedia.org/wiki/Rawson,_Chubut">capital of the Argentine province Chubut, Patagonia</a>. 
+            Before starting to work on my then undubbed RAW previewer, I travelled to Argentina and explored the beauty of Patagonia. During the travel, I also
+            noticed certain tensions between Argentina and England. So I decided to name my project "rawson.js" in order to remind the two countries of their shared past (The city of Rawson was founded by Welsh immigrants in 1854)
+            </p><p></p>
+            The logo animal of rawson.js is a <a href="http://en.wikipedia.org/wiki/Commerson%27s_dolphin ">Commerson's Dolphin <i>(Cephalorhynchus commersonii)</i></a>, 
+             whose very distinctive patterning might remind one of the <a href="http://en.wikipedia.org/wiki/Bayer_filter">Bayer filters</a> used in Digital photography.
+             
+             </p>
         </div>
         </div>
     </section>
@@ -332,7 +369,7 @@
         
         
       <footer>
-        <p>© Franz Buchinger 2012, dcraw &copy; by Dave Coffin, rawson logo by Gabriela Lucano</p>
+        <p>rawson.js © Franz Buchinger 2012, licensend under a MIT-style license, <a href="http://www.cybercom.net/~dcoffin/dcraw/">dcraw</a> &copy; by Dave Coffin, rawson logo by <a href="http://gabylucano.carbonmade.com/">Gabriela Lucano</a></p>
       </footer>
 
     </div> <!-- /container -->
