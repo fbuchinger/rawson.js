@@ -20,6 +20,7 @@
         height:300px;
         padding-bottom: 0px;
       }
+      
       .rawson-screenshot {
           background-image: url(site/rawson_screenshot.jpg);
           background-position: -10px -220px;
@@ -32,7 +33,9 @@
           z-index:0;
        }
        
+       
        footer p {
+            margin-top: 20px;
             text-align: center;
         }
     
@@ -47,6 +50,54 @@
           z-index:1;
        }
        
+        /* Landscape phones and down */
+        @media (max-width: 768px) { 
+            
+            .hero-unit {
+                padding: 0px;
+                background-color: transparent;
+                height: 350px;
+                
+            }
+            
+            .navbar .brand {
+                font-size: 14px;
+            }
+            
+            .rawson-logo {
+              background-image: url(site/rawsonjs_320.png);
+              left: 50%;
+              top: 50%;
+              margin-left: -160px;
+              margin-top: -350px;
+              padding-top: 180px;
+              padding-left: 10px;
+              padding-right: 10px;
+              padding-bottom: 40px;
+              width: 320px;
+            }
+            
+            .rawson-logo p {
+                font-size: 14px;
+                line-height:18px;
+            }
+            
+            .btn-large {
+                padding: 5px 9px;
+                font-size: 14px;
+            }
+            
+            .rawson-screenshot {
+              display: none;
+           }
+        }
+        
+        @media (max-width: 768px) { 
+            left: 0px;
+            
+        }
+ 
+
        p.subhero-links {
           margin-top:9px;
        }
