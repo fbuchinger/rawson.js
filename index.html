@@ -156,7 +156,7 @@
             <a class="btn btn-primary btn-large" href="rawson.html">Try it now...</a>
             <a class="btn btn-large" href="https://github.com/fbuchinger/rawson.js/zipball/master">Download</a>
             <a class="btn btn-large" href="https://github.com/fbuchinger/rawson.js">Visit rawson.js@github</a>
-            <p class="subhero-links"><a href="https://github.com/fbuchinger/rawson.js/wiki/Roadmap" target="_new">Version 0.1 (experimental), see Roadmap &amp; Changelog</a></p>
+            <p class="subhero-links"><a href="https://github.com/fbuchinger/rawson.js/wiki/Roadmap" target="_new"><b>Version 0.2 ("real RAW", 2013-02-12, experimental)</b>, see Roadmap &amp; Changelog</a></p>
           </div>
                   <div class="rawson-screenshot"></div>
         <div class="rawson-claim">
@@ -187,8 +187,8 @@
           <h3>zero-install, cross-platform</h3>
           <p>Enjoy the rawson.js on every platform, without prior installation. rawson.js runs in Firefox 3.6+ or Chrome 8+ on Windows, Linux or MacOS X</p>
           
-          <h3>reasonable performance</h3>
-          <p>Opening a RAW file takes about 5 seconds on my moderately equiped Lenovo ThinkPad Edge 13 laptop (<a href="http://www.cpubenchmark.net/cpu_lookup.php?cpu=AMD+Turion+II+Neo+K685+Dual-Core" target="_new">AMD K685</a>, 6GB RAM)</p>
+          <h3><strike>reasonable performance</strike></h3>
+          <p><strike>Opening a RAW file takes about 5 seconds on my moderately equiped Lenovo ThinkPad Edge 13 laptop (<a href="http://www.cpubenchmark.net/cpu_lookup.php?cpu=AMD+Turion+II+Neo+K685+Dual-Core" target="_new">AMD K685</a>, 6GB RAM)</strike>In v0.2 the performance is poor on purpose, as we wanted to access real raw data. v0.3 should bring a smarter rendering mechanism again.</p>
        </div>
        
       </div>
@@ -243,11 +243,6 @@
         </div>
         <div class="row">
             <div class="span8 offset2">
-            <h3>When I open my RAW file in rawson.js, nothing or just a tiny image is shown. What happened?</h3>
-
-            <p>rawson.js currently <b>only accesses the embedded preview image</b> of the raw file, 
-                so it can't show anything if the raw file has no preview file embedded. To test this, you can run <code>dcraw -e &lt;raw file&gt;</code>.
-                If no output is producted, then the raw file has no preview image) </p>
            <h3>Will rawson.js run on Internet Explorer?</h3>
 
             <p>The rawson.js viewer application will not run on current versions of Internet Explorer
@@ -256,18 +251,10 @@
              
             <h3>Can I edit my camera raw photos in rawson.js like I do in Lightroom or RawTherapee?</h3>
 
-            <p> Not yet. Currently rawson.js can only display the embeded metadata of the raw file 
-                (JPEG preview + camera settings), but not the actual sensor data. Javascript wasn't designed for 
-                computationally intensive tasks and demosaicing a 20-megapixel raw file is definitely one. 
-                Don't believe me? In my tests the raw-to-bitmap conversion with dcraw.js took more than 10 minutes, 
-                the same conversion with dcraw.c was done in less than 20 seconds.</p>
-
-            <p>But there is some hope on the horizon: via WebGL, Javascript can use the unmatched 
-            computing power of modern graphics cards (GPUs) in combination with a typed shader language (GLGS). 
-            However, WebGL is still somewhat experimental and shader coding is a completely different story.</p>
+            <p> Not yet. We 've introduced the rendering of real raw image data in v0.2, but there still is a long way to go to support editing.</p>
 
             <h3>I receive a "script executing warning" when opening a raw file. What can I do?</h3>
-
+            <p>Use a faster laptop/computer. Since v0.2, we are rendering the actual raw image data, not just the embedded preview. On netbooks/slower laptops it might take minutes until a raw image is opened. We are working on a mechanism to optimize the rendering of raw images for slower systems. </p>
             <p>Update to the latest version of Firefox or Chrome, as the Javascript performance usually improves significantly between the versions.</p>
 
             <p>Make sure you have closed/deactivated Firebug or the Chrome Developer Extensions. Especially Firebug can massively slow down rawson.js</p>
@@ -426,11 +413,27 @@
             </div>
         </div>
     </section>
+    <section id="contributors">
+        <div class="page-header offset1">
+            <h1>
+                Contributors <small>Kudos to...</small>
+            </h1>
+        </div>
+        <div class="row">
+             <div class="span8 offset2">
+             <ul>
+                <li><a href="http://www.cybercom.net/~dcoffin/">Dave Coffin</a> for writing and maintaining <a href="http://www.cybercom.net/~dcoffin/dcraw/">dcraw.c</a></li>
+                <li><a href="http://gabylucano.carbonmade.com/">Gabriela Lucano</a> for designing the <a href="site/rawsonjs.png">rawson.js logo</a></li>
+                <li><a href="https://github.com/gulrotkake">gulrotkake</a> for reworking the <a href="https://github.com/fbuchinger/rawson.js/pull/2">dcraw.c -> dcraw.js compilation</a></li>
+             </ul>
+             </div>
+        </div>
+    </section>
     
         
         
       <footer>
-        <p>rawson.js © Franz Buchinger 2012, licensend under a MIT-style license, <a href="http://www.cybercom.net/~dcoffin/dcraw/">dcraw</a> &copy; by Dave Coffin, rawson logo by <a href="http://gabylucano.carbonmade.com/">Gabriela Lucano</a></p>
+        <p>rawson.js © Franz Buchinger 2012, licensend under a MIT-style license </p>
       </footer>
 
     </div> <!-- /container -->
