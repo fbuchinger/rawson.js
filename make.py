@@ -19,6 +19,7 @@ emscripten.Settings.OPTIMIZE = 1
 emscripten.Settings.RELOOP = 1
 emscripten.Settings.INIT_STACK = 0
 emscripten.Settings.INVOKE_RUN = 0
+#emscripten.Settings.ASM_JS = 1
 
 emscripten.Building.COMPILER_TEST_OPTS = ['-g']
 
@@ -26,7 +27,7 @@ emscripten.Building.COMPILER_TEST_OPTS = ['-g']
 
 print 'Build dcraw.js'
 
-output = Popen([emscripten.EMCC, '-O1', '-s', 'ALLOW_MEMORY_GROWTH=1', '-g','-lm', '-o', 'build/dcraw.js','-DNODEPS','dcraw/dcraw.c'], stdout=PIPE, stderr=STDOUT).communicate()[0]
+output = Popen([emscripten.EMCC, '-O1', '-s', 'ALLOW_MEMORY_GROWTH=1','ASM_JS=1' '-g','-lm', '-o', 'build/dcraw.js','-DNODEPS','dcraw/dcraw.c'], stdout=PIPE, stderr=STDOUT).communicate()[0]
 assert os.path.exists('build/dcraw.js'), 'Failed to build dcraw: ' + output
 
 # re-introduced timezone bug in emscripten lib - 
