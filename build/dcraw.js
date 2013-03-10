@@ -22,6 +22,22 @@
 (function() {
     var root;
     root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
+
+(function() {
+    var root;
+    root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
+
+(function() {
+    var root;
+    root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
+
+(function() {
+    var root;
+    root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
+
+(function() {
+    var root;
+    root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
 // Note: Some Emscripten settings will significantly limit the speed of the generated code.
 // Note: Some Emscripten settings may limit the speed of the generated code.
 try {
@@ -70829,6 +70845,22 @@ if (shouldRunNow) {
 
 
 
+
+    root.run = run;
+    root.FS = FS;
+}());
+
+    root.run = run;
+    root.FS = FS;
+}());
+
+    root.run = run;
+    root.FS = FS;
+}());
+
+    root.run = run;
+    root.FS = FS;
+}());
 
     root.run = run;
     root.FS = FS;
